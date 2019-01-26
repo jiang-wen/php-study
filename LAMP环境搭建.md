@@ -92,7 +92,16 @@ pcre可以从[Index of pcre](https://ftp.pcre.org/pub/pcre/)下载
 
 至此apache的安装就完成了
 执行命令启动apache `/usr/local/apache/bin/apachectl start`
-启动的时候可能会报错，这是httpd.conf配置的原因，暂时先不管
+启动的时候可能会报错:
+```
+httpd: Syntax error on line 134 of /usr/local/apache/conf/httpd.conf: Cannot load modules/mod_ssl.so into server: libssl.so.1.0.0: cannot open shared object file: No such file or directory
+```
+解决方法,在`/etc/ld.so.conf`文件中写入openssl库文件的搜索路径:
+`echo "/usr/local/lib64" >> /etc/ld.so.conf`
+
+再使用`ldconfig -v`命令查看动态链接生效结果
+
+再次执行命令启动Apache，如果再出现以下错误，是httpd.conf配置的原因，暂时先不管
 ```
 AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using localhost.localdomain. Set the 'ServerName' directive globally to suppress this message
 ```
