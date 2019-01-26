@@ -1,6 +1,6 @@
 LAMP环境搭建是PHP程序员必须掌握的一项基本技能，但是对于初学者来说，操作步骤比较繁琐。本文是作者个人对LAMP环境搭建的整个流程的理解，在此学习分享，希望对学习PHP的同学有所帮助，欢迎指正错误哦~
 
-####一、 Linux安装（CentOS）
+#### 一、 Linux安装（CentOS）
 
 如果是本地测试环境，则需要安装虚拟机软件，这里使用的是[VirtualBox](https://www.virtualbox.org/)，下载好后根据自己需要安装在相应的位置就好了。
 
@@ -132,9 +132,9 @@ configure: WARNING: unrecognized options: --with-mysql
 返回phpinfo结果如下则php安装成功
 ![phpinfo](https://upload-images.jianshu.io/upload_images/2305018-36bf1263439d2351.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-####四、MySQL安装
+#### 四、MySQL安装
 
-#####**1.检测是否安装MySQL**
+##### **1.检测是否安装MySQL**
 
 Linux平台上推荐使用RPM包来安装MySQL
 安装前，我们可以检测系统是否自带安装 MySQL:
@@ -143,7 +143,7 @@ Linux平台上推荐使用RPM包来安装MySQL
 普通删除模式 ：`rpm -e mysql`　
 如果使用普通删除命令删除时，提示有依赖的其它文件，则用强力删除模式：`rpm -e --nodeps mysql` 可以对其进行强力删除　
 
-#####**2.安装MySQL**
+##### **2.安装MySQL**
 
 使用wget下载rpm包 `wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm`
 再依次执行以下命令用yum进行安装
@@ -163,7 +163,7 @@ yum -y install mysql-server
 
 如果我们是第一次启动 mysql 服务，mysql 服务器首先会进行初始化的配置。
 
-#####**3.验证MySQL安装**
+##### **3.验证MySQL安装**
 
 使用 mysqladmin 工具来获取服务器状态：`mysqladmin --version`
 显示结果基于你的系统信息：
@@ -191,7 +191,7 @@ mysql>
 
 使用`exit;`命令断开连接
 
-#####**4.修改密码**
+##### **4.修改密码**
 
 MySQL安装成功后，默认root密码为空，需要进行设置
 使用命令修改root密码：`mysqladmin -u root password "12345678";`
@@ -204,7 +204,7 @@ Warning: Using a password on the command line interface can be insecure.
 
 登陆成功后可以使用MySQL命令对MySQL数据库进行操作了。
 
-#####**5.远程管理MySQL**
+##### **5.远程管理MySQL**
 
 如果需要**远程管理数据库**，则需要用户有远程访问权限，即`user`表`host`字段的值为`%`
 
@@ -218,12 +218,12 @@ Warning: Using a password on the command line interface can be insecure.
 重启防火墙：`systemctl restart firewalld.service`
 
 
-####五、配置Apache和PHP
+#### 五、配置Apache和PHP
 
 使用vim打开Apache的配置文件：
 `vim /usr/local/apache/conf/httpd.conf`
 
-#####1.添加PHP支持：
+##### 1.添加PHP支持：
 
 在文件中添加一行；如果PHP版本为5.X，则需要加载PHP5的模块
 ```
@@ -242,13 +242,13 @@ AddType application/x-httpd-php-source .phps
 ```
 
 
-#####2.修改ServerName
+##### 2.修改ServerName
 
 去掉`ServerName`前的`#`号，将其改成如下形式：
 ```
 ServerName localhost
 ```
-#####3.开启Apache支持伪静态
+##### 3.开启Apache支持伪静态
 
 将rewrite模块加载前的`#`号去掉
 ```
@@ -258,13 +258,13 @@ LoadModule rewrite_module modules/mod_rewrite.so
 ```
 AllowOverride all
 ```
-#####4.不显示目录结构
+##### 4.不显示目录结构
 
 将`<Directory "/usr/local/apache/htdocs">`标签下的 `Options Indexes FollowSymLinks`修改为
 ```
 Options  FollowSymLinks
 ```
-#####5.修改php.ini
+##### 5.修改php.ini
 
 
 我们在安装PHP的时候设置了配置文件的路径
@@ -277,7 +277,7 @@ Options  FollowSymLinks
 cp /root/php-7.2.9/php.ini-development /usr/local/php/php.ini
 ```
 
-#####6.验证服务器能否解析PHP
+##### 6.验证服务器能否解析PHP
 首先重启Apache：
 `/usr/local/apache/bin/apachectl restart`
 没有返回任何结果，则表明重启成功
