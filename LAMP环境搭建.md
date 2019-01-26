@@ -104,8 +104,7 @@ AH00558: httpd: Could not reliably determine the server's fully qualified domain
 开放80端口：`firewall-cmd --zone=public --add-port=80/tcp --permanent`
 重启防火墙：`systemctl restart firewalld.service`
 
-
-####三、PHP安装
+#### 三、PHP安装
 下载php源码，可以从 搜狐开源镜像站 [http://mirrors.sohu.com/](http://mirrors.sohu.com/)找到各版本下载链接
 
 进入root目录：`cd /root`
@@ -255,17 +254,16 @@ ServerName localhost
 LoadModule rewrite_module modules/mod_rewrite.so
 ```
 将`<Directory "/usr/local/apache/htdocs">`标签下的 `AllowOverride None`修改为
-```
+```conf
 AllowOverride all
 ```
 ##### 4.不显示目录结构
 
 将`<Directory "/usr/local/apache/htdocs">`标签下的 `Options Indexes FollowSymLinks`修改为
-```
+```conf
 Options  FollowSymLinks
 ```
 ##### 5.修改php.ini
-
 
 我们在安装PHP的时候设置了配置文件的路径
 `--with-config-file-path=/usr/local/php`
@@ -273,7 +271,8 @@ Options  FollowSymLinks
 分别是`php.ini-development`和`php.ini-production`
 这两个文件是开发环境和生产环境的默认配置，这里我们使用开发环境
 使用`cp`命令复制：
-```
+
+```bash
 cp /root/php-7.2.9/php.ini-development /usr/local/php/php.ini
 ```
 
