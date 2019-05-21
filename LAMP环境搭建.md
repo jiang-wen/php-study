@@ -1,4 +1,4 @@
->LAMP环境搭建是PHP程序员必须掌握的一项基本技能，但是对于初学者来说，操作步骤比较繁琐。本文是作者个人对LAMP环境搭建的整个流程的理解，在此学习分享，希望对学习PHP的同学有所帮助，欢迎指正错误哦~
+LAMP环境搭建是PHP程序员必须掌握的一项基本技能，但是对于初学者来说，操作步骤比较繁琐。本文是作者个人对LAMP环境搭建的整个流程的理解，在此学习分享，希望对学习PHP的同学有所帮助，欢迎指正错误哦~
 
 #### 一、 Linux安装（CentOS）
 
@@ -6,149 +6,113 @@
 
 [CentOS](https://www.centos.org/)的`ISO`文件下载好以后用虚拟机打开安装。
 
-
+相关文章：[Windows下利用VirtualBox安装CentOS虚拟机](https://www.jianshu.com/p/150a48ec6436)
 
 #### 二、安装环境准备
 
-##### 1. 更新yum源
-> `yum -y update`
-##### 2. 安装wget 和 vim
-> `yum -y install wget vim`
-
-wget用于下载文件，本教程下载的都是`tar.gz`格式的压缩包；vim为编辑器
-
-##### 3. 安装编译环境
->`yum -y install gcc gcc-c++ libxml2-devel libtool expat-devel`
-
+1. 更新yum源： `yum -y update`
+2. 安装wget 和 vim： `yum -y install wget vim`
+wget用于下载文件，本教程下载的都是`tar.gz`格式的压缩包；
+vim为编辑器
+3. 安装编译环境：
+ `yum -y install gcc gcc-c++ libxml2-devel libtool expat-devel automake autoconf make`
 这里安装了c和c++的编译环境以及可能需要用到的库
-##### 4. (重要提示)
->本教程使用root用户执行所有指令，如果使用其他用户，某些步骤可能需要添加`sudo`命令才能执行；所有文件下载均在`/root`目录下，请注意每一步骤执行时所在的目录。
+4. **(重要)本教程使用root用户执行所有指令，如果使用其他用户，某些步骤可能需要添加`sudo`命令才能执行；所有文件下载均在`/root`目录下，请注意每一步骤执行时所在的目录。**
 
 
 #### 三、Apache 安装 
 
 
-##### 1. apr 和 apr-util 下载安装
-
+1. **apr 和 apr-util 下载安装**
 [apr官网](https://apr.apache.org/)可以下载到apr和apr-util的源码
-
 本教程下载的是[apr-1.6.5.tar.gz](http://mirrors.hust.edu.cn/apache/apr/apr-1.6.5.tar.gz)和[apr-util-1.6.1.tar.gz](http://mirrors.hust.edu.cn/apache/apr/apr-util-1.6.1.tar.gz)
-
-进入root目录：
->`cd /root`
-
+进入root目录：`cd /root`
 下载使用wget：
+`wget http://mirrors.hust.edu.cn/apache/apr/apr-1.6.5.tar.gz`
+`wget http://mirrors.hust.edu.cn/apache/apr/apr-util-1.6.1.tar.gz`
 
-> `wget http://mirrors.hust.edu.cn/apache/apr/apr-1.6.5.tar.gz`
-> `wget http://mirrors.hust.edu.cn/apache/apr/apr-util-1.6.1.tar.gz`
+      下载完成后开始解压并编译安装apr-1.6.5
+    ```
+    tar -zvxf apr-1.6.5.tar.gz
+    cd apr-1.6.5
+    ./configure --prefix=/usr/local/apr
+    make && make install
+    ```
+    再安装apr-util-1.6.1
+    ```
+    cd /root
+    tar -zvxf apr-util-1.6.1.tar.gz
+    cd apr-util-1.6.1
+    ./configure --prefix=/usr/local/apr-util --with-apr=/usr/local/apr
+    make && make install
+    ```
 
-下载完成后开始解压并编译安装apr-1.6.5
+>除了编译安装方式，也可以在编译httpd时，将apr 和apr-util解压到httpd源码目录下的`srclib`目录，分别命名为`apr`和`apr-util`；
+>执行httpd`./configure`时，将 `--with-apr=/usr/local/apr`  和 `--with-apr-util=/usr/local/apr-util`两个配置项改为   `--with-apr-included`执行
 
-```
-tar -zvxf apr-1.6.5.tar.gz
-cd apr-1.6.5
-./configure --prefix=/usr/local/apr
-make && make install
-```
-
-再安装apr-util-1.6.1
-
-```
-cd /root
-tar -zvxf apr-util-1.6.1.tar.gz
-cd apr-util-1.6.1
-./configure --prefix=/usr/local/apr-util --with-apr=/usr/local/apr
-make && make install
-```
-
-##### 2. pcre 下载安装
-
+2. **pcre 下载安装**
 进入root目录：`cd /root`
-
 pcre可以从[Index of pcre](https://ftp.pcre.org/pub/pcre/)下载
-
 `wget https://ftp.pcre.org/pub/pcre/pcre-8.42.tar.gz`
-
 下载完成后解压编译安装
-
-```
-tar -zvxf pcre-8.42.tar.gz
-cd pcre-8.42
-./configure
-make && make install
-```
-
-##### 3. zlib 下载安装
-
+    ```
+    tar -zvxf pcre-8.42.tar.gz
+    cd pcre-8.42
+    ./configure
+    make && make install
+    ```
+3. **zlib 下载安装**
 进入root目录：`cd /root`
-
 从[zlib官网](http://www.zlib.net/)找到下载链接
-
 `wget http://www.zlib.net/zlib-1.2.11.tar.gz`
-
 下载完成后解压安装
-
-```
-tar -zxvf zlib-1.2.11.tar.gz
-cd zlib-1.2.11
-./configure
-make && make install
-```
-##### 4. openssl 下载安装
-
+    ```
+    tar -zxvf zlib-1.2.11.tar.gz
+    cd zlib-1.2.11
+    ./configure
+    make && make install
+    ```
+4. **openssl 下载安装**
 进入root目录：`cd /root`
-
 [Index of openssl](http://distfiles.macports.org/openssl/)上可以下载openssl源码包
-
 `wget http://distfiles.macports.org/openssl/openssl-1.0.2q.tar.gz`
-
 下载完成后解压安装
+    ```
+    tar -zxvf openssl-1.0.2q.tar.gz
+    cd openssl-1.0.2q
+    ./config shared zlib
+    make && make install
+    ```
 
-```
-tar -zxvf openssl-1.0.2q.tar.gz
-cd openssl-1.0.2q
-./config shared zlib
-make && make install
-```
-
-##### 5. httpd 下载安装
-
-进入root目录：`cd /root` 
-
+5. **httpd 下载安装**
+进入root目录：`cd /root`
 [Apache官网](http://httpd.apache.org/)上可以下载到最新版本的源码
-
 下载：`wget http://mirror.bit.edu.cn/apache/httpd/httpd-2.4.38.tar.gz`
-
 解压：`tar -zvxf httpd-2.4.38.tar.gz`
-
 解压完成进入httpd-2.4.38目录：`cd httpd-2.4.38`
-
 配置编译安装选项：
-
 `./configure --prefix=/usr/local/apache --with-zlib=/usr/local/zlib --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr-util --with-ssl=/usr/local/ssl --enable-so --enable-dav --enable-ssl --enable-rewrite --enable-modules=most --enable-maintainer-mode`
-
-编译安装：
-
-`make && make install`
+编译安装：`make && make install`
 
 至此apache的安装就完成了
-
 执行命令启动apache `/usr/local/apache/bin/apachectl start`
-
 启动的时候可能会报错:
-
 ```
 httpd: Syntax error on line 134 of /usr/local/apache/conf/httpd.conf: Cannot load modules/mod_ssl.so into server: libssl.so.1.0.0: cannot open shared object file: No such file or directory
 ```
-
 解决方法,在`/etc/ld.so.conf`文件中写入openssl库文件的搜索路径:
-
 `echo "/usr/local/lib64" >> /etc/ld.so.conf`
-
 再使用`ldconfig -v`命令查看动态链接生效结果
 
-再次执行命令启动Apache，如果再出现以下错误，是httpd.conf配置的原因，暂时先不管
+>如果动态链接之后依然不生效，检查一下`/usr/local/lib64`文件夹是否存在，某些系统可能是`/usr/local/lib`；检查的时候顺便进lib目录里查看`libssl.so.1.0.0`和`libcrypto.so.1.0.0 `是否存在，如果不存在的话需要到openssl源码目录下复制过来；
+```
+cd  /root/openssl-1.0.2q
+cp libssl.so.1.0.0 /usr/local/lib64
+cp libcrypto.so.1.0.0  /usr/local/lib64
+ldconfig -v
+```
 
+再次执行命令启动Apache，如果再出现以下错误，是httpd.conf配置的原因，暂时先不管
 ```
 AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using localhost.localdomain. Set the 'ServerName' directive globally to suppress this message
 ```
@@ -157,16 +121,15 @@ AH00558: httpd: Could not reliably determine the server's fully qualified domain
 ![安装成功](https://upload-images.jianshu.io/upload_images/2305018-429673ebb57e2f7e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 若服务器无响应，有可能是防火墙80端口未开放；对于云服务器也有可能是因为没有配置[安全组规则](https://support.huaweicloud.com/usermanual-vpc/SecurityGroup_0012.html)。
-
 开放80端口：`firewall-cmd --zone=public --add-port=80/tcp --permanent`
-
 重启防火墙：`systemctl restart firewalld.service`
 
+
 #### 三、PHP安装
-下载php源码，可以从 搜狐开源镜像站 [http://mirrors.sohu.com/](http://mirrors.sohu.com/)找到各版本下载链接
+下载php源码，可以从php官方 [https://secure.php.net/releases/](https://secure.php.net/releases/)找到各版本下载链接
 
 进入root目录：`cd /root`
-开始下载：`wget http://mirrors.sohu.com/php/php-7.2.9.tar.gz`
+开始下载：`wget https://www.php.net/distributions/php-7.2.9.tar.gz`
 
 解压：`tar -zxvf php-7.2.9.tar.gz`
 进入目录：`cd php-7.2.9`
@@ -229,7 +192,6 @@ mysqladmin  Ver 8.42 Distrib 5.6.43, for Linux on x86_64
 ```
 使用MySQL客户端命令连接至MySQL服务器：`mysql`
 出现如下界面则连接成功：
-
 ```
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 2
@@ -313,16 +275,17 @@ ServerName localhost
 LoadModule rewrite_module modules/mod_rewrite.so
 ```
 将`<Directory "/usr/local/apache/htdocs">`标签下的 `AllowOverride None`修改为
-```conf
+```
 AllowOverride all
 ```
 ##### 4.不显示目录结构
 
 将`<Directory "/usr/local/apache/htdocs">`标签下的 `Options Indexes FollowSymLinks`修改为
-```conf
+```
 Options  FollowSymLinks
 ```
 ##### 5.修改php.ini
+
 
 我们在安装PHP的时候设置了配置文件的路径
 `--with-config-file-path=/usr/local/php`
@@ -330,8 +293,7 @@ Options  FollowSymLinks
 分别是`php.ini-development`和`php.ini-production`
 这两个文件是开发环境和生产环境的默认配置，这里我们使用开发环境
 使用`cp`命令复制：
-
-```bash
+```
 cp /root/php-7.2.9/php.ini-development /usr/local/php/php.ini
 ```
 
